@@ -2,6 +2,8 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 
+import addRoomListeners from "./listeners.ts/roomListeners";
+
 const app = express();
 const httpServer = http.createServer(app);
 
@@ -17,6 +19,8 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('User connected');
+
+  addRoomListeners(socket);
 
   socket.on('disconnect', () => {
     console.log('User disconnected');
