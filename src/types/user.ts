@@ -1,4 +1,4 @@
-interface GithubUser {
+interface User {
   nickname: string,
   name: string,
   picture: string,

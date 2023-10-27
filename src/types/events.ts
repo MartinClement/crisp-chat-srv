@@ -1,25 +1,17 @@
 type MessageData = {
-  user: GithubUser,
+  user: User,
   message: string,
   timestamp: Number,
 }
 
-interface IRoomCreatedCallbackPayload {
+interface IRoomCreatedPayload {
   roomId: string,
 }
 
 interface IClientToServerEvents {
-  'room:create': ({
-    user,
-    roomName,
-    callback
-  }: {
-    user: GithubUser,
-    roomName: string,
-    callback: ({ roomId }: IRoomCreatedCallbackPayload ) => any,
-  }) => void;
-  'room:message': ({ roomId, messageData }: { roomId: string, messageData: MessageData }) => void;
-  'room:join': ({ user, roomId }: { user: GithubUser, roomId: string }) => void;
+  'room:create': (data: { user: User, roomName: string}, callback: (payload: IRoomCreatedPayload) => any) => void;
+  'room:message': (data: { roomId: string, messageData: MessageData }) => void;
+  'room:join': (data: { user: User, roomId: string }) => void;
 }
 
 interface IServerToClientEvents {
