@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import http from "http";
 
 import addRoomListeners from "./listeners.ts/roomListeners";
+import { RoomStorage } from "./storage/RoomStorage";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -17,10 +18,12 @@ app.get('/', (req, res) => {
   res.send('Express + Typescript Server');
 });
 
+const roomStorage = new RoomStorage();
+
 io.on('connection', (socket) => {
   console.log('User connected');
 
-  addRoomListeners(socket);
+  addRoomListeners(socket, roomStorage);
 
   socket.on('disconnect', () => {
     console.log('User disconnected');
