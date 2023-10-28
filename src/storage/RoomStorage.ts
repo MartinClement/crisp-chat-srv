@@ -11,29 +11,31 @@ export class RoomStorage {
     return this.#ROOMS[roomId];
   }
 
-  #generateRoomId(roomName: string) {
+  #generateSafeRoomId(roomName: string) {
     return `${roomName}-kapoue`;
   };
 
-  #rotateMessages(messages: IMessageData[], message:IMessageData) {
+  #rotateMessages(messages: IMessage[], message:IMessage) {
     return [...messages, message].slice(messages.length > 10 ? 1 : 0);
   }
 
-  createRoom({ roomName, user }: { roomName: string, user: User }) {
-    const roomId = this.#generateRoomId(roomName);
+  createRoom({ roomId, user }: { roomId: string, user: User }) {
 
-    if (this.#ROOMS[roomId]) {
-      throw new Error('ROOM_NOT_AVAILABLE');
+    if(this.#ROOMS[roomId]) {
+      return this.#ROOMS[roomId];
     }
-  
+
+    const safeRoomId = this.#generateSafeRoomId(roomId);
     const newRoom: IRoom = {
-      id: roomId,
+      id: safeRoomId,
       users: [],
       owner: user.nickname,
       messages: [],
     };
 
-    this.#ROOMS[roomId] = newRoom;
+    this.#ROOMS[safeRoomId] = newRoom;
+
+    console.log(JSON.stringify(this.#ROOMS[safeRoomId]))
 
     return newRoom;
   };
@@ -55,7 +57,7 @@ export class RoomStorage {
     throw new Error("ROOM_NOT_FOUND");
   }
 
-  addMessage({ roomId, message }: { roomId: string, message: IMessageData}) {
+  addMessage({ roomId, message }: { roomId: string, message: IMessage}) {
     const room = this.#getRoom(roomId);
 
     if (room) {
