@@ -1,7 +1,7 @@
 interface IMessage {
   user: User,
   message: string,
-  timestamp: Number,
+  timestamp: number,
 }
 
 interface IRoomCreatedPayload {
@@ -16,10 +16,12 @@ interface IClientToServerEvents {
   'room:create': (data: { user: User, roomId: string }, callback: (payload: IRoomCreatedPayload) => any) => void;
   'room:message': (data: { roomId: string, message: IMessage }, callback: (payload: IRoomMessagePayload) => any) => void;
   'room:join': (data: { user: User, roomId: string }, callback: ({ room }: { room: IRoom }) => any) => void;
+  "room:user_kick": (data: { user: User; roomId: string }) => void;
 }
 
 interface IServerToClientEvents {
   'room:message': ({ message }: IMessage ) => void;
-  'room:user_joined': ({ user }: { user: User }) => void;
+  'room:users': ({ users }: { users: User[] }) => void;
+  'room:kick': () => void;
   'error:message': ({ message }: { message: string }) => void;
 }
