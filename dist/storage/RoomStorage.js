@@ -28,7 +28,7 @@ class RoomStorage {
         const newRoom = {
             id: safeRoomId,
             users: [],
-            owner: user.nickname,
+            owner: user.email,
             messages: [],
         };
         __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[safeRoomId] = newRoom;

@@ -29,7 +29,7 @@ export class RoomStorage {
     const newRoom: IRoom = {
       id: safeRoomId,
       users: [],
-      owner: user.nickname,
+      owner: user.email,
       messages: [],
     };
 
