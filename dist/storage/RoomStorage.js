@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _RoomStorage_instances, _RoomStorage_ROOMS, _RoomStorage_getRoom, _RoomStorage_generateSafeRoomId, _RoomStorage_rotateMessages;
+var _RoomStorage_instances, _RoomStorage_ROOMS, _RoomStorage_getRoom, _RoomStorage_addRoomUser, _RoomStorage_removeRoomUser, _RoomStorage_generateSafeRoomId, _RoomStorage_rotateMessages;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoomStorage = void 0;
 class RoomStorage {
@@ -39,9 +39,17 @@ class RoomStorage {
     joinRoom({ roomId, user }) {
         const room = __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_getRoom).call(this, roomId);
         if (room) {
-            const newRoom = Object.assign(Object.assign({}, room), { users: [...room.users, user] });
+            const newRoom = Object.assign(Object.assign({}, room), { users: __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_addRoomUser).call(this, room.users, user) });
             __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[roomId] = newRoom;
             return newRoom;
+        }
+        throw new Error("ROOM_NOT_FOUND");
+    }
+    leaveRoom({ roomId, user }) {
+        const room = __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_getRoom).call(this, roomId);
+        if (room) {
+            const newRoom = Object.assign(Object.assign({}, room), { users: __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_removeRoomUser).call(this, room.users, user) });
+            __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[room.id] = newRoom;
         }
         throw new Error("ROOM_NOT_FOUND");
     }
@@ -60,6 +68,19 @@ class RoomStorage {
 exports.RoomStorage = RoomStorage;
 _RoomStorage_ROOMS = new WeakMap(), _RoomStorage_instances = new WeakSet(), _RoomStorage_getRoom = function _RoomStorage_getRoom(roomId) {
     return __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[roomId];
+}, _RoomStorage_addRoomUser = function _RoomStorage_addRoomUser(users, newUser) {
+    if (users.find((user) => user.email === newUser.email)) {
+        return users;
+    }
+    return [...users, newUser];
+}, _RoomStorage_removeRoomUser = function _RoomStorage_removeRoomUser(users, oldUser) {
+    const userIndex = users.findIndex((user) => user.email === oldUser.email);
+    if (userIndex === -1) {
+        return users;
+    }
+    const newUsers = [...users];
+    newUsers.splice(userIndex, 1);
+    return newUsers;
 }, _RoomStorage_generateSafeRoomId = function _RoomStorage_generateSafeRoomId(roomName) {
     return `${roomName}-kapoue`;
 }, _RoomStorage_rotateMessages = function _RoomStorage_rotateMessages(messages, message) {

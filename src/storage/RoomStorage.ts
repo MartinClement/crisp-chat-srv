@@ -11,6 +11,27 @@ export class RoomStorage {
     return this.#ROOMS[roomId];
   }
 
+  #addRoomUser(users: User[], newUser: User) {
+    if (users.find((user) => user.email === newUser.email)) {
+      return users;
+    }
+
+    return [...users, newUser];
+  }
+
+  #removeRoomUser(users: User[], oldUser: User) {
+    const userIndex = users.findIndex((user) => user.email === oldUser.email);
+
+    if (userIndex === -1) {
+      return users;
+    }
+
+    const newUsers = [...users];
+    newUsers.splice(userIndex, 1);
+
+    return newUsers;
+  }
+
   #generateSafeRoomId(roomName: string) {
     return `${roomName}-kapoue`;
   };
@@ -46,12 +67,27 @@ export class RoomStorage {
     if (room) {
       const newRoom = {
         ...room,
-        users: [...room.users, user],
+        users: this.#addRoomUser(room.users, user),
       };
 
       this.#ROOMS[roomId] = newRoom;
 
       return newRoom;
+    }
+
+    throw new Error("ROOM_NOT_FOUND");
+  }
+
+  leaveRoom({ roomId, user }: {roomId: string, user: User}) {
+    const room = this.#getRoom(roomId);
+
+    if (room) {
+      const newRoom = {
+        ...room,
+        users: this.#removeRoomUser(room.users, user),
+      }
+
+      this.#ROOMS[room.id] = newRoom;
     }
 
     throw new Error("ROOM_NOT_FOUND");
