@@ -91,5 +91,5 @@ _RoomStorage_ROOMS = new WeakMap(), _RoomStorage_instances = new WeakSet(), _Roo
 }, _RoomStorage_generateSafeRoomId = function _RoomStorage_generateSafeRoomId(roomName, socketId) {
     return `${roomName}-${socketId}`;
 }, _RoomStorage_rotateMessages = function _RoomStorage_rotateMessages(messages, message) {
-    return [...messages, message].slice(messages.length > 10 ? 1 : 0);
+    return [...messages, message].slice(messages.length > 9 ? 1 : 0);
 };

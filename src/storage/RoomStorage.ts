@@ -37,7 +37,7 @@ export class RoomStorage {
   };
 
   #rotateMessages(messages: IMessage[], message:IMessage) {
-    return [...messages, message].slice(messages.length > 10 ? 1 : 0);
+    return [...messages, message].slice(messages.length > 9 ? 1 : 0);
   }
 
   createRoom({ roomId, user, socketId }: {roomId: string, user: User, socketId: string}) {
