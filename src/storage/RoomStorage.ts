@@ -32,21 +32,27 @@ export class RoomStorage {
     return newUsers;
   }
 
-  #generateSafeRoomId(roomName: string) {
-    return `${roomName}-kapoue`;
+  #generateSafeRoomId(roomName: string, socketId: string) {
+    return `${roomName}-${socketId}`;
   };
 
   #rotateMessages(messages: IMessage[], message:IMessage) {
     return [...messages, message].slice(messages.length > 10 ? 1 : 0);
   }
 
-  createRoom({ roomId, user }: { roomId: string, user: User }) {
+  createRoom({ roomId, user, socketId }: {roomId: string, user: User, socketId: string}) {
 
     if(this.#ROOMS[roomId]) {
       return this.#ROOMS[roomId];
     }
 
-    const safeRoomId = this.#generateSafeRoomId(roomId);
+    /*
+      In a real world,  this id won't came out like this and should be managed in an other way
+      - DB id
+      - real id gen
+      - ...
+    */
+    const safeRoomId = this.#generateSafeRoomId(roomId, socketId);
     const newRoom: IRoom = {
       id: safeRoomId,
       users: [],
@@ -88,6 +94,7 @@ export class RoomStorage {
       }
 
       this.#ROOMS[room.id] = newRoom;
+      return newRoom;
     }
 
     throw new Error("ROOM_NOT_FOUND");

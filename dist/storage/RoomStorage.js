@@ -20,11 +20,17 @@ class RoomStorage {
         __classPrivateFieldSet(this, _RoomStorage_ROOMS, {}, "f");
     }
     ;
-    createRoom({ roomId, user }) {
+    createRoom({ roomId, user, socketId }) {
         if (__classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[roomId]) {
             return __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[roomId];
         }
-        const safeRoomId = __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_generateSafeRoomId).call(this, roomId);
+        /*
+          In a real world,  this id won't came out like this and should be managed in an other way
+          - DB id
+          - real id gen
+          - ...
+        */
+        const safeRoomId = __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_generateSafeRoomId).call(this, roomId, socketId);
         const newRoom = {
             id: safeRoomId,
             users: [],
@@ -50,6 +56,7 @@ class RoomStorage {
         if (room) {
             const newRoom = Object.assign(Object.assign({}, room), { users: __classPrivateFieldGet(this, _RoomStorage_instances, "m", _RoomStorage_removeRoomUser).call(this, room.users, user) });
             __classPrivateFieldGet(this, _RoomStorage_ROOMS, "f")[room.id] = newRoom;
+            return newRoom;
         }
         throw new Error("ROOM_NOT_FOUND");
     }
@@ -81,8 +88,8 @@ _RoomStorage_ROOMS = new WeakMap(), _RoomStorage_instances = new WeakSet(), _Roo
     const newUsers = [...users];
     newUsers.splice(userIndex, 1);
     return newUsers;
-}, _RoomStorage_generateSafeRoomId = function _RoomStorage_generateSafeRoomId(roomName) {
-    return `${roomName}-kapoue`;
+}, _RoomStorage_generateSafeRoomId = function _RoomStorage_generateSafeRoomId(roomName, socketId) {
+    return `${roomName}-${socketId}`;
 }, _RoomStorage_rotateMessages = function _RoomStorage_rotateMessages(messages, message) {
     return [...messages, message].slice(messages.length > 10 ? 1 : 0);
 };

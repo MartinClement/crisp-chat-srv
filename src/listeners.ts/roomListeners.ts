@@ -14,7 +14,7 @@ export default (socket: AppSocket, storage: RoomStorage) => {
 
   socket.on('room:create', ({ user, roomId }, callback) => {
     try {
-      const room = storage.createRoom({ user, roomId });
+      const room = storage.createRoom({ user, roomId, socketId: socket.id });
       callback({ roomId: room.id });
     } catch (err) {
       handleError(err);
@@ -25,8 +25,8 @@ export default (socket: AppSocket, storage: RoomStorage) => {
     try {
       const room = storage.joinRoom({ roomId, user});
       socket.join(room.id);
-      socket.to(room.id).emit('room:user_joined', { user });
-      callback({ room })
+      socket.to(room.id).emit('room:users', { users: room.users });
+      callback({ room });
     } catch (err) {
       handleError(err);
     }
@@ -42,4 +42,17 @@ export default (socket: AppSocket, storage: RoomStorage) => {
       handleError(err);
     }
   });
+
+  socket.on("room:user_kick", ({ user, roomId }) => {
+    try {
+      const room = storage.leaveRoom({ roomId, user });
+      if (user.socketId) {
+        socket.to(user.socketId).emit('room:kick');
+      }
+      socket.to(room.id).emit('room:users', { users: room.users });
+      socket.emit('room:users', { users: room.users });
+    } catch (err) {
+      handleError(err);
+    }
+  })
 };
