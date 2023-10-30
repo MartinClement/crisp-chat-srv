@@ -22,6 +22,7 @@ exports.default = (socket, storage) => {
     socket.on("room:join", ({ user, roomId }, callback) => {
         try {
             const room = storage.joinRoom({ roomId, user });
+            socket.join(room.id);
             socket.to(room.id).emit('room:user_joined', { user });
             callback({ room });
         }
