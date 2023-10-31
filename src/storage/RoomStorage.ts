@@ -62,8 +62,6 @@ export class RoomStorage {
 
     this.#ROOMS[safeRoomId] = newRoom;
 
-    console.log(JSON.stringify(this.#ROOMS[safeRoomId]))
-
     return newRoom;
   };
 

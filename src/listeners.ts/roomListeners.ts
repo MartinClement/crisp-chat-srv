@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { RoomStorage } from "../storage/RoomStorage";
-import { emit } from "process";
+
 type AppSocket = Socket<IClientToServerEvents, IServerToClientEvents>;
 
 export default (socket: AppSocket, storage: RoomStorage) => {
