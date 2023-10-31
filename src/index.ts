@@ -22,6 +22,14 @@ app.get('/', (req, res) => {
 });
 
 const roomStorage = new RoomStorage();
+const ROOM_CLEANING_INTERVAL = process.env.ROOM_CLEANING_INTERVAL;
+if (ROOM_CLEANING_INTERVAL) {
+  console.log("CLEAN ROOM INTERVAL DEFINED");
+  setInterval(() => {
+    roomStorage.cleanEmptyRooms();
+  }, parseInt(ROOM_CLEANING_INTERVAL))
+}
+
 
 io.on('connection', (socket) => {
   console.log('User connected');

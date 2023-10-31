@@ -117,4 +117,14 @@ export class RoomStorage {
     }
   }
 
+  cleanEmptyRooms() {
+    const cleanRooms: { [id: string]: IRoom } = Object.entries(this.#ROOMS).reduce((rooms, [roomId, room]) => {
+      if (room.users.length === 0) {
+        console.log(`[${new Date().toISOString() }] - Room: ${room.id} has been deleted due to inactivity`);
+      }
+      return room.users.length === 0 ? rooms : { ...rooms, [roomId]: room };
+    }, {})
+
+    this.#ROOMS = cleanRooms;
+  }
 }
