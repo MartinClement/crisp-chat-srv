@@ -16,7 +16,8 @@ interface IClientToServerEvents {
   'room:create': (data: { user: User, roomId: string }, callback: (payload: IRoomCreatedPayload) => any) => void;
   'room:message': (data: { roomId: string, message: IMessage }, callback: (payload: IRoomMessagePayload) => any) => void;
   'room:join': (data: { user: User, roomId: string }, callback: ({ room }: { room: IRoom }) => any) => void;
-  "room:user_kick": (data: { user: User; roomId: string }) => void;
+  'room:leave': (data: { user: User; roomId: string }) => void;
+  'room:user_kick': (data: { user: User; roomId: string }) => void;
 }
 
 interface IServerToClientEvents {

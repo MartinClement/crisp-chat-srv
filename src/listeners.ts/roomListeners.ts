@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { RoomStorage } from "../storage/RoomStorage";
+import { emit } from "process";
 type AppSocket = Socket<IClientToServerEvents, IServerToClientEvents>;
 
 export default (socket: AppSocket, storage: RoomStorage) => {
@@ -21,7 +22,7 @@ export default (socket: AppSocket, storage: RoomStorage) => {
     }
   });
 
-  socket.on("room:join", ({ user, roomId }, callback) => {
+  socket.on('room:join', ({ user, roomId }, callback) => {
     try {
       const room = storage.joinRoom({ roomId, user});
       socket.join(room.id);
@@ -32,7 +33,16 @@ export default (socket: AppSocket, storage: RoomStorage) => {
     }
   });
 
-  socket.on("room:message", ({ roomId, message }, callback) => {
+  socket.on('room:leave', ({ user, roomId }) => {
+    try {
+      const room = storage.leaveRoom({ roomId, user });
+      socket.to(roomId).emit('room:users', { users: room.users });
+    } catch (err) {
+      handleError(err);
+    }
+  })
+
+  socket.on('room:message', ({ roomId, message }, callback) => {
     try {
       const room = storage.addMessage({ roomId, message});
       socket.to(room.id).emit('room:message', message);
@@ -43,7 +53,7 @@ export default (socket: AppSocket, storage: RoomStorage) => {
     }
   });
 
-  socket.on("room:user_kick", ({ user, roomId }) => {
+  socket.on('room:user_kick', ({ user, roomId }) => {
     try {
       const room = storage.leaveRoom({ roomId, user });
       if (user.socketId) {
