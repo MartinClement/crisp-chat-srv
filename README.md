@@ -19,7 +19,7 @@
 > You might run into issues if your node version in lower.
 ```bash
 npm install
-cp .env.sampe
+cp .env.sample
 npm run build
 npm run start
 ```
