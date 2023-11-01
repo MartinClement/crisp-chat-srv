@@ -1,4 +1,5 @@
 import express from "express";
+import expressConfig from "./config";
 import { Server } from "socket.io";
 import http from "http";
 
@@ -32,6 +33,7 @@ const io = new Server(httpServer, {
 
 const port = process.env.PORT;
 
+expressConfig(app);
 app.get('/', (req, res) => {
   res.send('Express + Typescript Server');
 });
