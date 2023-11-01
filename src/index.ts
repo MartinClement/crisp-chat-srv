@@ -11,13 +11,16 @@ dotenv.config();
 const app = express();
 const httpServer = http.createServer(app);
 
+const corsSettings = process.env.MODE === 'dev' ?
+{ cors: { origin: "*" } } :
+{ cors: {
+  origin: process.env.FRONTEND_CLIENT_ORIGIN,
+}};
+
+console.log('CORS SETTINGS: ', JSON.stringify(corsSettings));
+
 const io = new Server(httpServer, {
-  ...(process.env.MODE === 'dev' ?
-    { cors: { origin: "*" } } :
-    { cors: {
-      origin: process.env.FRONTEND_CLIENT_ORIGIN,
-      methods: ["GET", "POST"]
-    }}),
+  ...corsSettings
 });
 
 const port = process.env.PORT;
@@ -29,7 +32,7 @@ app.get('/', (req, res) => {
 const roomStorage = new RoomStorage();
 const ROOM_CLEANING_INTERVAL = process.env.ROOM_CLEANING_INTERVAL;
 if (ROOM_CLEANING_INTERVAL) {
-  console.log("CLEAN ROOM INTERVAL DEFINED");
+  console.log("CLEAN ROOM INTERVAL DEFINED: ", ROOM_CLEANING_INTERVAL);
   setInterval(() => {
     roomStorage.cleanEmptyRooms();
   }, parseInt(ROOM_CLEANING_INTERVAL))
