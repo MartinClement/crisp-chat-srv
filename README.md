@@ -12,3 +12,14 @@
 | node 18  | [nodejs.org](https://nodejs.org/en)    |
 | SocketIO | [Socket.IO](https://socket.io)         |
 | express  | [express.com](https://expressjs.com//) |
+
+### Setup and Start
+> Requirements: node >= 18
+
+> You might run into issues if your node version in lower.
+```bash
+npm install
+cp .env.sampe
+npm run build
+npm run start
+```
