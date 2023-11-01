@@ -14,7 +14,11 @@ const httpServer = http.createServer(app);
 const corsSettings = process.env.MODE === 'dev' ?
 { cors: { origin: "*" } } :
 { cors: {
-  origin: process.env.FRONTEND_CLIENT_ORIGIN,
+  origin: [
+    'http://localhost:*',
+    'https://crisp-chat.vercel.app',
+    'https://crisp-chat*.vercel.app/',
+  ],
 }};
 
 console.log('CORS SETTINGS: ', JSON.stringify(corsSettings));
