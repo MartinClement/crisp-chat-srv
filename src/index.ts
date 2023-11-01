@@ -12,7 +12,12 @@ const app = express();
 const httpServer = http.createServer(app);
 
 const io = new Server(httpServer, {
-  ...(process.env.MODE === 'dev' ? { cors: { origin: "*" } } : {}),
+  ...(process.env.MODE === 'dev' ?
+    { cors: { origin: "*" } } :
+    { cors: {
+      origin: process.env.FRONTEND_CLIENT_ORIGIN,
+      methods: ["GET", "POST"]
+    }}),
 });
 
 const port = process.env.PORT;
