@@ -19,6 +19,9 @@ const corsSettings = process.env.MODE === 'dev' ?
     'https://crisp-chat.vercel.app',
     'https://crisp-chat*.vercel.app/',
   ],
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Access-Control-Allow-Credentials"],
+  credentials: true,
 }};
 
 console.log('CORS SETTINGS: ', JSON.stringify(corsSettings));
